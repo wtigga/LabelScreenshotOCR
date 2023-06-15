@@ -104,6 +104,12 @@ def combine_rectangles(rect1, rect2):
 def escape_description(text):
     return json.dumps(text, ensure_ascii=False)[1:-1]
 
+def save_definitions_as_txt(regions, output_file):
+    with open(output_file, 'w', encoding='utf-8') as file:
+        for region in regions:
+            description = escape_description(region[1])
+            file.write(f"{description}\n")
+
 
 # Get a list of PNG files in the folder
 file_list = [file for file in os.listdir(folder_path) if file.endswith('.png')]
@@ -112,7 +118,8 @@ file_list = [file for file in os.listdir(folder_path) if file.endswith('.png')]
 for file in file_list:
     # Construct the input and output file paths
     image_path = os.path.join(folder_path, file)
-    output_file = os.path.join(folder_path, file.replace('.png', '_JSON.json'))
+    json_output_file = os.path.join(folder_path, file.replace('.png', '_JSON.json'))
+    txt_output_file = os.path.join(folder_path, file.replace('.png', '_OCR_content.txt'))
 
     print(f"Processing image: {file}...")
 
@@ -122,7 +129,7 @@ for file in file_list:
 
     # Prepare the JSON output
     output = {
-        "version": "5.2.1",
+        "version": "4.5.6",
         "flags": {},
         "shapes": [],
         "imagePath": file,
@@ -149,7 +156,12 @@ for file in file_list:
     output["imageData"] = image_data
 
     # Save the JSON to a file with UTF-8 encoding
-    with open(output_file, 'w', encoding='utf-8') as file:
+    with open(json_output_file, 'w', encoding='utf-8') as file:
         json.dump(output, file, ensure_ascii=False, indent=2, sort_keys=False)
 
-    print(f"Output saved to {output_file}")
+    # Save the definitions as a TXT file
+    save_definitions_as_txt(regions, txt_output_file)
+
+    print(f"Output saved to {json_output_file} and {txt_output_file}")
+
+
