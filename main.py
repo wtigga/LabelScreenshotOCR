@@ -1,9 +1,15 @@
 import base64
 import json
 import os
-
+import PIL
+from PIL import Image
 import cv2
 import easyocr
+
+PIL.Image.ANTIALIAS = PIL.Image.LANCZOS
+
+#  this is a workaround for outdated EasyOCR library
+# https://github.com/JaidedAI/EasyOCR/issues/1077
 
 # Language of the text on your images
 source_language = 'ru'
